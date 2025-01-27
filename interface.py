@@ -14,7 +14,7 @@ def afficher(mini = False):
     
     
 def afficher_grille(pX, pY, mini):   
-    taille = 16 if mini else 32 
+    taille = 8 if mini else 32 
     mini_img = 9 if mini else 0
     
     for y in range(8):
@@ -100,6 +100,6 @@ def afficher_logs(x, y):
         VAR.fenetre.blit(texte_rendu, (x , y))
         y += texte_rendu.get_height() + 4
     
-def pause():
+def pause(delais = 1):
     pygame.display.update()
-    time.sleep(1)
+    time.sleep(delais)

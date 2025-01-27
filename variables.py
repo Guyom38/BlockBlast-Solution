@@ -1,9 +1,11 @@
+#https://www.patorjk.com/software/taag/#p=display&f=ANSI%20Regular&t=BOUCLE
 
 import fct as FCT
 
 import pygame
 from pygame.locals import *
 
+old_terrain = [[], [], []]
 terrain = []
 terrain.append(["0","0", "0", "0", "0", "0", "0", "0"])
 terrain.append(["0","0", "0", "0", "0", "0", "0", "0"])

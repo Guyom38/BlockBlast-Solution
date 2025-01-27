@@ -30,7 +30,7 @@ def chercher_lignes_et_colonnes():
         if carre == 8:
             colonnes.append(x)
             
-    detruits_lignes_et_colonnes(lignes, colonnes)
+    return detruits_lignes_et_colonnes(lignes, colonnes)
 
 # --------------------------------------------------------------------------------------------------
 def detruits_lignes_et_colonnes(liste_lignes, liste_colonnes):
@@ -45,7 +45,8 @@ def detruits_lignes_et_colonnes(liste_lignes, liste_colonnes):
             for y in range(8):
                 colonne = liste_colonnes[ix]            
                 VAR.terrain[y][colonne] = "8"
-                
+    
+    return (len(liste_lignes), len(liste_colonnes))
                 
 def placement_piece(p, x, y):
     """
