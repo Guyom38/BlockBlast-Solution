@@ -10,6 +10,43 @@ import pygame, time
 from pygame.locals import *
 
 
+def repositionner_piece():
+    """
+    Repositionne chaque pièce de VAR.pieces vers le haut et la gauche tout en conservant
+    les dimensions 5x5 en complétant avec des "0" si nécessaire.
+    """
+    for piece in VAR.pieces:
+        # Supprimer les lignes vides en haut
+        while len(piece) > 0 and all(cell == "0" for cell in piece[0]):
+            piece.pop(0)
+
+        # Supprimer les lignes vides en bas
+        while len(piece) > 0 and all(cell == "0" for cell in piece[-1]):
+            piece.pop(-1)
+
+        # Supprimer les colonnes vides à gauche
+        while len(piece[0]) > 0 and all(row[0] == "0" for row in piece):
+            for row in piece:
+                row.pop(0)
+
+        # Supprimer les colonnes vides à droite
+        while len(piece[0]) > 0 and all(row[-1] == "0" for row in piece):
+            for row in piece:
+                row.pop(-1)
+
+        # Compléter la matrice pour qu'elle fasse à nouveau 5x5
+        while len(piece) < 5:  # Ajouter des lignes vides en bas
+            piece.append(["0"] * 5)
+        for row in piece:  # Ajouter des colonnes vides à droite
+            while len(row) < 5:
+                row.append("0")
+
+    # Mettre à jour l'affichage après repositionnement
+    IHM.afficher()
+    pygame.display.update()
+
+
+
 def Memoriser_Grille(id_grille):
     VAR.old_terrain[id_grille] = [row.copy() for row in VAR.terrain]
 
@@ -47,6 +84,8 @@ def Genere_Liste_Bonnes_Places(id_piece):
 
         
 def Trouver_Meilleure_Solution():
+    repositionner_piece()
+
     Memoriser_Grille(3)
     
     nbP = 0

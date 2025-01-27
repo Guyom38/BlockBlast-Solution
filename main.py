@@ -64,9 +64,7 @@ while VAR.boucle:
         FCT.enregistrer_donnees(VAR.terrain, VAR.pieces )     
 
     if IHM.bouton("Solution", 1024-216, 120):  # Bouton centré
-        VAR.pieces[0] = ALGO2.repositionner_piece(VAR.pieces[0])
-        VAR.pieces[1] = ALGO2.repositionner_piece(VAR.pieces[1])
-        VAR.pieces[2] = ALGO2.repositionner_piece(VAR.pieces[2])
+
         ALGO2.Trouver_Meilleure_Solution()       
 
 
