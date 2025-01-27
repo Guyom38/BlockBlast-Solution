@@ -5,6 +5,7 @@ import fct as FCT
 import interface as IHM
 
 
+
 # --------------------------------------------------------------------------------------------------
 def chercher_lignes_et_colonnes():
     lignes = []

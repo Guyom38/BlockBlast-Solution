@@ -4,6 +4,7 @@ import variables as VAR
 import algo as ALGO
 import algo2 as ALGO2
 
+
 import interface as IHM
 import time
 
@@ -64,12 +65,8 @@ while VAR.boucle:
         FCT.enregistrer_donnees(VAR.terrain, VAR.pieces )     
 
     if IHM.bouton("Solution", 1024-216, 120):  # Bouton centré
-
-        ALGO2.Trouver_Meilleure_Solution()       
-
-
-
-
+        ALGO2.Trouver_Meilleure_Solution()             
+        
     pygame.display.update()
     horloge.tick(25)
     VAR.souris[0] = 0

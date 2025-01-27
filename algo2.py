@@ -3,12 +3,12 @@ import algo as ALGO
 import interface as IHM
 
 import variables as VAR
-import itertools
+
 
 # --- importation des librairies Pygame 
 import pygame, time
 from pygame.locals import *
-
+from concurrent.futures import ThreadPoolExecutor
 
 def repositionner_piece():
     for piece in VAR.pieces:
@@ -49,7 +49,7 @@ def memoriser_grille(id_grille):
 def restaurer_grille(id_grille):
     VAR.terrain = [row.copy() for row in VAR.old_terrain[id_grille]]
 
-def mettre_a_jour_grille():
+def OLD_mettre_a_jour_grille_OLD():
     for y in range(8):
         for x in range(8):      
             if int(VAR.terrain[y][x]) > 5:
@@ -57,7 +57,12 @@ def mettre_a_jour_grille():
             elif  int(VAR.terrain[y][x]) > 0:
                 VAR.terrain[y][x] = "1"  
 
-
+def mettre_a_jour_grille():
+    VAR.terrain = [
+        ["0" if int(cell) > 5 else "1" if int(cell) > 0 else cell for cell in row]
+        for row in VAR.terrain
+    ]
+    
 def Genere_Liste_Bonnes_Places(id_piece):
     memoriser_grille(id_piece)
 
@@ -67,11 +72,10 @@ def Genere_Liste_Bonnes_Places(id_piece):
             if ALGO.placement_piece(id_piece, x, y):
                 nb_lignes, nb_colonnes = ALGO.chercher_lignes_et_colonnes()
                 liste_emplacements_possibles.append((id_piece, (x, y), (nb_lignes, nb_colonnes)))
-
-            restaurer_grille(id_piece)
-
+                restaurer_grille(id_piece)
 
     return liste_emplacements_possibles
+
 
 
         
@@ -79,7 +83,7 @@ def Trouver_Meilleure_Solution():
     VAR.duree_traitement = time.time()
     
     solutions = {}
-    pm, p1, p2, i = 0, 0, 0, 0
+    pm, p1, i = 0, 0, 0
     max_score, max_penalites, id_best = 0, 0, -1
     liste_permutations_pieces = [   (0, 1, 2), \
                                     (0, 2, 1), \
@@ -98,7 +102,6 @@ def Trouver_Meilleure_Solution():
         restaurer_grille(3)        
         liste1 = Genere_Liste_Bonnes_Places(piece1)
         for id_piece1, (x1, y1), (nb_lignes1, nb_colonnes1) in liste1:
-            p2 = 0
             p1 += 1
             
             restaurer_grille(id_piece1)
@@ -108,7 +111,6 @@ def Trouver_Meilleure_Solution():
             
             liste2 = Genere_Liste_Bonnes_Places(piece2)
             for id_piece2, (x2, y2), (nb_lignes2, nb_colonnes2) in liste2:
-                p2 += 1
                 
                 restaurer_grille(id_piece2)
                 ALGO.placement_piece(id_piece2, x2, y2)
@@ -135,70 +137,69 @@ def Trouver_Meilleure_Solution():
                          id_best, max_score, max_penalites = i, score, penalites
                     i += 1
 
-                afficher_progression(pm, p1, p2, liste1, liste2)
+                afficher_progression(pm, p1, liste1)
                 
     restaurer_grille(3)
     afficher_meilleure_combinaison(id_best, solutions)
 
 
-def afficher_progression(pm, p1, p2, liste1, liste2):
+def afficher_progression(pm, p1, liste1):
     pourcentage = int ((100 /  6 )* pm)                            
-    IHM.barre_progression("Progression Permutation Pieces : ", pourcentage, 16, 640, 1008, 30)
+    IHM.barre_progression("Progression Permutation Pieces : ", pourcentage, 16, 680, 994, 30)
     pourcentage2 = int ((100 / len(liste1)) * p1)
-    IHM.barre_progression("Progression Placements Piece 1 : ", pourcentage2, 16, 680, 1008, 30)
-    pourcentage3 = int ((100 / len(liste2)) * p2)
-    IHM.barre_progression("Progression Placements Piece 2 : ", pourcentage3, 16, 720, 1008, 30)               
+    IHM.barre_progression("Progression Placements Piece 1 : ", pourcentage2, 16, 720, 994, 30)
+      
     pygame.display.update()
     
 def afficher_meilleure_combinaison(id_best, solutions):
     if id_best > -1:
         xx, yy, premier = 16, 350, True
         (id_piece1, x1, y1, t1), (id_piece2, x2, y2, t2), (id_piece3, x3, y3, t3), score, penalites = solutions[id_best]
-        print((id_best, solutions[id_best]))
 
         for id_piece, xxx, yyy in ((id_piece1, x1, y1), (id_piece2, x2, y2), (id_piece3, x3, y3)):      
             test = ALGO.placement_piece(id_piece, xxx, yyy)
             IHM.afficher_grille(xx, yy, not premier)
-            IHM.pause(0.2)
+            IHM.pause(0.5)
             xx += 32*9
             ALGO.chercher_lignes_et_colonnes()
             mettre_a_jour_grille()    
-            IHM.barre_progression("Durée du traitement : " + str(round(time.time() - VAR.duree_traitement,3)) + "s    ...", 100, 16, 640, 1008, 30)
+            IHM.barre_progression("Durée du traitement : " + str(round(time.time() - VAR.duree_traitement,3)) + "s    ...", 100, 16, 680, 994, 90)
 
     else:
-        IHM.barre_progression("Aucune solution trouvée  : ", 0, 16, 720, 1008, 40, (255,0,0), (200,16,16), (255,255,255))
+        IHM.barre_progression("Aucune solution trouvée  : ", 0, 16, 720, 994, 40, (255,0,0), (200,16,16), (255,255,255))
         pygame.display.update()
     
 def trouver_zones_vides_et_score():
-
-    # Initialiser la liste des zones et un tableau pour marquer les cellules visitées
+    # Initialiser les zones et les cellules visitées
     zones = []
-    visites = [[False for _ in range(8)] for _ in range(8)]
-    index_zone = 0
+    visites = [[False] * 8 for _ in range(8)]
     score_total = 0
+    index_zone = 0
 
-    def explorer_zone(x, y):
-        pile = [(x, y)]
-        cellules = []
-        while pile:
-            cx, cy = pile.pop()
+    def explorer_zone_bfs(x, y):
+        # Utiliser une file pour explorer les cellules (BFS)
+        file = [(x, y)]
+        cellules_zone = []
+        while file:
+            cx, cy = file.pop(0)
             if 0 <= cx < 8 and 0 <= cy < 8 and not visites[cy][cx] and VAR.terrain[cy][cx] == "0":
                 visites[cy][cx] = True
-                cellules.append((cx, cy))
-                # Ajouter les voisins à explorer
-                pile.extend([(cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)])
-        return cellules
+                cellules_zone.append((cx, cy))
 
-    # Parcourir chaque cellule du terrain
+                # Ajouter les voisins à la file
+                file.extend([(cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)])
+        return cellules_zone
+
+    # Parcourir toutes les cellules de la grille
     for y in range(8):
         for x in range(8):
             if VAR.terrain[y][x] == "0" and not visites[y][x]:
                 # Trouver une nouvelle zone vide
-                cellules_zone = explorer_zone(x, y)
-                if cellules_zone:
-                    taille_zone = len(cellules_zone)
+                cellules_zone = explorer_zone_bfs(x, y)
+                taille_zone = len(cellules_zone)
 
-                    # Calculer la pénalité en fonction de la taille de la zone
+                if taille_zone > 0:
+                    # Calculer directement la pénalité
                     if taille_zone == 1:
                         score_total += -1000  # Pénalité pour une zone de taille 1
                     elif taille_zone == 2:
@@ -209,10 +210,13 @@ def trouver_zones_vides_et_score():
                     # Ajouter la zone à la liste des zones
                     zones.append({
                         "index": index_zone,
-                        "position": cellules_zone[0],  # Première cellule de la zone
+                        "position": cellules_zone[0],  # Première cellule
                         "cellules": taille_zone
                     })
                     index_zone += 1
 
-    score_total -= (len(zones) * 5)
+    # Ajouter une pénalité pour chaque zone détectée
+    score_total -= len(zones) * 5
+
     return zones, score_total
+
