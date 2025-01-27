@@ -48,8 +48,6 @@ img_bloc = None
 souris = [0, 0, 0]
 boucle = True
 tempo = 0
-message = ""
-
-logs = []
+duree_traitement = 0
 
 tmini = 8

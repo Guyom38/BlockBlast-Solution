@@ -6,8 +6,7 @@ import pygame, time
 from pygame.locals import *
 
 
-def afficher(mini = False):
-    
+def afficher(mini = False):    
     
     afficher_grille(16, 16, mini)
     afficher_pieces_disponibles(16, 16)
@@ -51,20 +50,7 @@ def afficher_pieces_disponibles(pX, pY):
 def bouton(texte, x, y, longueur=200, hauteur=40, 
            couleur_normal=(100, 100, 200), couleur_clique=(50, 50, 150), 
            couleur_texte=(255, 255, 255), police_taille=24):
-    """
-    Crée un bouton interactif avec une animation de clic.
 
-    :param texte: Texte affiché sur le bouton.
-    :param x: Position x du bouton.
-    :param y: Position y du bouton.
-    :param longueur: Longueur du bouton en pixels.
-    :param hauteur: Hauteur du bouton en pixels (par défaut 50).
-    :param couleur_normal: Couleur du bouton normal (par défaut bleu clair).
-    :param couleur_clique: Couleur du bouton lors du clic (par défaut bleu foncé).
-    :param couleur_texte: Couleur du texte (par défaut blanc).
-    :param police_taille: Taille de la police (par défaut 24).
-    :return: True si le bouton est cliqué, sinon False.
-    """
     # Obtenir la position de la souris et l'état des boutons
     souris = pygame.mouse.get_pos()
     clic = pygame.mouse.get_pressed()
@@ -92,13 +78,7 @@ def bouton(texte, x, y, longueur=200, hauteur=40,
         time.sleep(0.2)
     return result
 
-def afficher_logs(x, y):
-    
-    for log in VAR.logs[-10:]:
-        police = pygame.font.Font(None, 32)
-        texte_rendu = police.render(log, True, (255,255,255))
-        VAR.fenetre.blit(texte_rendu, (x , y))
-        y += texte_rendu.get_height() + 4
+
     
 def pause(delais = 1):
     pygame.display.update()
@@ -107,20 +87,6 @@ def pause(delais = 1):
 def barre_progression(texte, pourcentage, x, y, longueur=300, hauteur=40, 
                       couleur_barre=(100, 200, 100), couleur_fond=(200, 200, 200), 
                       couleur_texte=(0, 0, 0), police_taille=24):
-    """
-    Affiche une barre de progression avec un texte et un pourcentage centrés.
-
-    :param texte: Texte affiché au centre de la barre.
-    :param pourcentage: Progression (de 0 à 100).
-    :param x: Position x de la barre.
-    :param y: Position y de la barre.
-    :param longueur: Longueur totale de la barre en pixels.
-    :param hauteur: Hauteur de la barre en pixels.
-    :param couleur_barre: Couleur de la progression (par défaut vert clair).
-    :param couleur_fond: Couleur de fond de la barre (par défaut gris clair).
-    :param couleur_texte: Couleur du texte (par défaut noir).
-    :param police_taille: Taille de la police du texte (par défaut 24).
-    """
     # S'assurer que le pourcentage reste dans les bornes [0, 100]
     pourcentage = max(0, min(100, pourcentage))
 
