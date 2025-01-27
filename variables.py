@@ -5,7 +5,7 @@ import fct as FCT
 import pygame
 from pygame.locals import *
 
-old_terrain = [[], [], []]
+old_terrain = [[], [], [], []]
 terrain = []
 terrain.append(["0","0", "0", "0", "0", "0", "0", "0"])
 terrain.append(["0","0", "0", "0", "0", "0", "0", "0"])
@@ -51,3 +51,5 @@ tempo = 0
 message = ""
 
 logs = []
+
+tmini = 8

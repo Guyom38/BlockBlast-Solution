@@ -14,7 +14,7 @@ def afficher(mini = False):
     
     
 def afficher_grille(pX, pY, mini):   
-    taille = 8 if mini else 32 
+    taille = VAR.tmini if mini else 32 
     mini_img = 9 if mini else 0
     
     for y in range(8):
@@ -48,7 +48,7 @@ def afficher_pieces_disponibles(pX, pY):
         pX += 5 * 32
         
 
-def bouton(texte, x, y, longueur=200, hauteur=50, 
+def bouton(texte, x, y, longueur=200, hauteur=40, 
            couleur_normal=(100, 100, 200), couleur_clique=(50, 50, 150), 
            couleur_texte=(255, 255, 255), police_taille=24):
     """
@@ -103,3 +103,37 @@ def afficher_logs(x, y):
 def pause(delais = 1):
     pygame.display.update()
     time.sleep(delais)
+
+def barre_progression(texte, pourcentage, x, y, longueur=300, hauteur=40, 
+                      couleur_barre=(100, 200, 100), couleur_fond=(200, 200, 200), 
+                      couleur_texte=(0, 0, 0), police_taille=24):
+    """
+    Affiche une barre de progression avec un texte et un pourcentage centrés.
+
+    :param texte: Texte affiché au centre de la barre.
+    :param pourcentage: Progression (de 0 à 100).
+    :param x: Position x de la barre.
+    :param y: Position y de la barre.
+    :param longueur: Longueur totale de la barre en pixels.
+    :param hauteur: Hauteur de la barre en pixels.
+    :param couleur_barre: Couleur de la progression (par défaut vert clair).
+    :param couleur_fond: Couleur de fond de la barre (par défaut gris clair).
+    :param couleur_texte: Couleur du texte (par défaut noir).
+    :param police_taille: Taille de la police du texte (par défaut 24).
+    """
+    # S'assurer que le pourcentage reste dans les bornes [0, 100]
+    pourcentage = max(0, min(100, pourcentage))
+
+    # Dessiner le fond de la barre
+    pygame.draw.rect(VAR.fenetre, couleur_fond, (x, y, longueur, hauteur))
+
+    # Dessiner la barre de progression
+    largeur_remplie = int((longueur * pourcentage) / 100)
+    pygame.draw.rect(VAR.fenetre, couleur_barre, (x, y, largeur_remplie, hauteur))
+
+    # Ajouter le texte centré
+    police = pygame.font.Font(None, police_taille)
+    texte_complet = f"{texte} {pourcentage}%"
+    texte_rendu = police.render(texte_complet, True, couleur_texte)
+    VAR.fenetre.blit(texte_rendu, (x + (longueur - texte_rendu.get_width()) // 2, 
+                                   y + (hauteur - texte_rendu.get_height()) // 2))

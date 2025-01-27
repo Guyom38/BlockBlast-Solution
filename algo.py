@@ -38,13 +38,13 @@ def detruits_lignes_et_colonnes(liste_lignes, liste_colonnes):
         for iy in range(len(liste_lignes)):
             for x in range(8):
                 ligne = liste_lignes[iy]            
-                VAR.terrain[ligne][x] = "8"
+                VAR.terrain[ligne][x] = "6"
                 
     if (len(liste_colonnes) > 0):
         for ix in range(len(liste_colonnes)):
             for y in range(8):
                 colonne = liste_colonnes[ix]            
-                VAR.terrain[y][colonne] = "8"
+                VAR.terrain[y][colonne] = "7"
     
     return (len(liste_lignes), len(liste_colonnes))
                 
