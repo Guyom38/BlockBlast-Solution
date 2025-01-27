@@ -51,22 +51,19 @@ def placement_piece(p, x, y):
     for yb in range(len(VAR.pieces[p])):  # Parcourt les lignes de la pièce
         for xb in range(len(VAR.pieces[p][yb])):  # Parcourt les colonnes de la pièce
             if VAR.pieces[p][yb][xb] == "1":  # Si la case de la pièce est occupée
-                # Vérifier si on dépasse les limites du terrain
                 if x + xb >= 8 or y + yb >= 8: 
                     return False
-                # Vérifier si la case correspondante sur le terrain est déjà occupée
                 if VAR.terrain[y + yb][x + xb] != "0":
                     return False    
     
     # Étape 2 : Appliquer les modifications au terrain
     for yb in range(len(VAR.pieces[p])):  # Parcourt les lignes de la pièce
         for xb in range(len(VAR.pieces[p][yb])):  # Parcourt les colonnes de la pièce
-            # Si la case de la pièce est occupée et que la case sur le terrain est vide
             if VAR.pieces[p][yb][xb] == "1" and VAR.terrain[y + yb][x + xb] == "0":
-                # Marquer la case sur le terrain avec une valeur unique
                 VAR.terrain[y + yb][x + xb] = str(3 + p)
     
-    # Étape 3 : Retourner le succès
+
     return True
 
-    
+
+

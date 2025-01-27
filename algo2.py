@@ -144,7 +144,7 @@ def Trouver_Meilleure_Solution():
 
 
 def afficher_progression(pm, p1, liste1):
-    pourcentage = int ((100 /  6 )* pm)                            
+    pourcentage = int ((100 /  6 ) * pm)                            
     IHM.barre_progression("Progression Permutation Pieces : ", pourcentage, 16, 680, 994, 30)
     pourcentage2 = int ((100 / len(liste1)) * p1)
     IHM.barre_progression("Progression Placements Piece 1 : ", pourcentage2, 16, 720, 994, 30)
@@ -170,6 +170,7 @@ def afficher_meilleure_combinaison(id_best, solutions):
         pygame.display.update()
     
 def trouver_zones_vides_et_score():
+
     # Initialiser les zones et les cellules visitées
     zones = []
     visites = [[False] * 8 for _ in range(8)]
