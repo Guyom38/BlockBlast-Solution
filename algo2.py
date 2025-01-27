@@ -49,14 +49,6 @@ def memoriser_grille(id_grille):
 def restaurer_grille(id_grille):
     VAR.terrain = [row.copy() for row in VAR.old_terrain[id_grille]]
 
-def OLD_mettre_a_jour_grille_OLD():
-    for y in range(8):
-        for x in range(8):      
-            if int(VAR.terrain[y][x]) > 5:
-                VAR.terrain[y][x] = "0"  
-            elif  int(VAR.terrain[y][x]) > 0:
-                VAR.terrain[y][x] = "1"  
-
 def mettre_a_jour_grille():
     VAR.terrain = [
         ["0" if int(cell) > 5 else "1" if int(cell) > 0 else cell for cell in row]
@@ -78,7 +70,21 @@ def Genere_Liste_Bonnes_Places(id_piece):
 
 
 
-        
+def optimiser_pieces():
+    repositionner_piece()   
+    
+    VAR.pieces_composition = [
+        [
+            (x, y)  # Coordonnées de la case occupée
+            for y in range(5)  # Parcourt les lignes
+            for x in range(5)  # Parcourt les colonnes
+            if VAR.pieces[p][y][x] == "1"  # Si la case est occupée
+        ]
+        for p in range(3)  # Parcourt les pièces
+    ]
+     
+                
+    
 def Trouver_Meilleure_Solution():
     VAR.duree_traitement = time.time()
     
@@ -92,7 +98,7 @@ def Trouver_Meilleure_Solution():
                                     (2, 0, 1), \
                                     (2, 1, 0)   ]
     
-    repositionner_piece()
+    optimiser_pieces()
     memoriser_grille(3)
     
     for piece1, piece2, piece3 in liste_permutations_pieces:
@@ -159,11 +165,11 @@ def afficher_meilleure_combinaison(id_best, solutions):
         for id_piece, xxx, yyy in ((id_piece1, x1, y1), (id_piece2, x2, y2), (id_piece3, x3, y3)):      
             test = ALGO.placement_piece(id_piece, xxx, yyy)
             IHM.afficher_grille(xx, yy, not premier)
-            IHM.pause(0.5)
             xx += 32*9
             ALGO.chercher_lignes_et_colonnes()
-            mettre_a_jour_grille()    
-            IHM.barre_progression("Durée du traitement : " + str(round(time.time() - VAR.duree_traitement,3)) + "s    ...", 100, 16, 680, 994, 90)
+            mettre_a_jour_grille()  
+              
+        IHM.barre_progression("Durée du traitement : " + str(round(time.time() - VAR.duree_traitement,3)) + "s    ...", 100, 16, 680, 994, 90)
 
     else:
         IHM.barre_progression("Aucune solution trouvée  : ", 0, 16, 720, 994, 40, (255,0,0), (200,16,16), (255,255,255))

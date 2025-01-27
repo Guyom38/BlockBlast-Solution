@@ -17,6 +17,10 @@ terrain.append(["0","0", "0", "0", "0", "0", "0", "1"])
 terrain.append(["1","1", "1", "0", "1", "1", "1", "1"])
 
 
+pieces_composition = []
+pieces_composition.append([])
+pieces_composition.append([])
+pieces_composition.append([])
 
 pieces = []
 

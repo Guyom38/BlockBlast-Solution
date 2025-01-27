@@ -48,22 +48,40 @@ def detruits_lignes_et_colonnes(liste_lignes, liste_colonnes):
                 
 def placement_piece(p, x, y):
     # Étape 1 : Vérifier si le placement est valide
-    for yb in range(len(VAR.pieces[p])):  # Parcourt les lignes de la pièce
-        for xb in range(len(VAR.pieces[p][yb])):  # Parcourt les colonnes de la pièce
-            if VAR.pieces[p][yb][xb] == "1":  # Si la case de la pièce est occupée
-                if x + xb >= 8 or y + yb >= 8: 
-                    return False
-                if VAR.terrain[y + yb][x + xb] != "0":
-                    return False    
+    for (xb, yb) in VAR.pieces_composition[p]:
+        if x + xb >= 8 or y + yb >= 8: 
+            return False
+        if VAR.terrain[y + yb][x + xb] != "0":
+            return False    
     
     # Étape 2 : Appliquer les modifications au terrain
-    for yb in range(len(VAR.pieces[p])):  # Parcourt les lignes de la pièce
-        for xb in range(len(VAR.pieces[p][yb])):  # Parcourt les colonnes de la pièce
-            if VAR.pieces[p][yb][xb] == "1" and VAR.terrain[y + yb][x + xb] == "0":
-                VAR.terrain[y + yb][x + xb] = str(3 + p)
-    
+    for (xb, yb) in VAR.pieces_composition[p]:
+        if VAR.terrain[y + yb][x + xb] == "0":
+            VAR.terrain[y + yb][x + xb] = str(3 + p)
 
     return True
 
 
+# --------------------------------------------------------------------------------------------------
+def chercher_lignes_et_colonnes2():
+    # Trouver les lignes complètement remplies
+    lignes = [y for y in range(8) if all(VAR.terrain[y][x] != "0" for x in range(8))]
 
+    # Trouver les colonnes complètement remplies
+    colonnes = [x for x in range(8) if all(VAR.terrain[y][x] != "0" for y in range(8))]
+
+    # Détruire les lignes et colonnes trouvées
+    return detruits_lignes_et_colonnes(lignes, colonnes)
+
+# --------------------------------------------------------------------------------------------------
+def detruits_lignes_et_colonnes2(liste_lignes, liste_colonnes):
+    # Détruire les lignes
+    for ligne in liste_lignes:
+        VAR.terrain[ligne] = ["6"] * 8  # Remplace toute la ligne par "6"
+
+    # Détruire les colonnes
+    for colonne in liste_colonnes:
+        for y in range(8):
+            VAR.terrain[y][colonne] = "7"  # Remplace chaque case de la colonne par "7"
+
+    return len(liste_lignes), len(liste_colonnes)
